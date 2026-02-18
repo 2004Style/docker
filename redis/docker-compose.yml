@@ -1,8 +1,12 @@
 services:
   redis:
-    image: redis:latest
-    container_name: redis-server
-    restart: always
+    image: redis:7.2-alpine # versión ligera de Redis
+    container_name: redis-server # nombre del contenedor
+    restart: on-failure # reiniciar el contenedor si falla pero no cuando se detiene manualmente o se reinicia el servicio de docker
     ports:
-      - "6379:6379"
-    command: "redis-server --loglevel warning --requirepass rdev"
+      - "6379:6379" # mapear el puerto 6379 del contenedor al puerto 6379 del host
+    command: "redis-server --appendonly yes" # habilitar el modo de persistencia AOF
+    volumes:
+      - redis_data:/data # volumen para persistir los datos de Redis
+volumes:
+  redis_data: # definir el volumen para los datos de Redis

@@ -1,16 +1,16 @@
 services:
   postgres:
-    image: postgres:latest
-    container_name: postgres-server
-    restart: always
-    environment:
-      POSTGRES_USER: rdev
-      POSTGRES_PASSWORD: rdev
-      POSTGRES_DB: postgres
+    image: postgres:16.2-alpine # es la version ligera de Postgres
+    container_name: postgres-server # nombre del contenedor
+    restart: on-failure # reiniciar el contenedor si falla pero no cuando se detiene manualmente o se reinicia el servicio de docker
+    environment: # variables de entorno para configurar Postgres
+      POSTGRES_USER: rdev # usuario de la base de datos
+      POSTGRES_PASSWORD: rdev # contraseña del usuario
+      POSTGRES_DB: postgres # nombre de la base de datos
     ports:
-      - "5432:5432"
+      - "5432:5432" # mapear el puerto 5432 del contenedor al puerto 5432 del host
     volumes:
-      - postgres_data:/var/lib/postgresql
+      - postgres_data:/var/lib/postgresql/data # volumen para persistir los datos de la base de datos
 
 volumes:
-  postgres_data:
+  postgres_data: # definir el volumen para los datos de Postgres

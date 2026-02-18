@@ -1,0 +1,19 @@
+services:
+  nats:
+    image: nats:2.10-alpine # es la version ligera de NATS
+    command: ["--jetstream", "--store_dir=/data", "--http_port", "8222"] # habilitar JetStream, persistencia y el endpoint HTTP de monitoreo
+    container_name: nats-server # nombre del contenedor
+    ports:
+      - "4222:4222" # mapear el puerto 4222 del contenedor al puerto 4222 del host
+      - "8222:8222" # mapear el puerto 8222 del contenedor al puerto 8222 del host para la consola de administración
+    volumes:
+      - nats_data:/data # volumen para persistir los datos de NATS
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8222/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: on-failure # reiniciar el contenedor si falla pero no cuando se detiene manualmente o se reinicia el servicio de docker
+
+volumes:
+  nats_data: # definir el volumen para los datos de NATS

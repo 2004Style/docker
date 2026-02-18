@@ -7,7 +7,7 @@ services:
     environment:
       SA_PASSWORD: "Ron@ld1234"
       ACCEPT_EULA: "Y"
-    restart: always
+    restart: on-failure # reiniciar el contenedor si falla pero no cuando se detiene manualmente o se reinicia el servicio de docker
     volumes:
       - sql_data:/var/opt/mssql
 
