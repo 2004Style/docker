@@ -30,19 +30,29 @@ docker compose logs -f mysql
 | --- | --- |
 | Servicio Compose | `mysql` |
 | Contenedor | `mysql-server` |
-| Imagen | `mysql:latest` |
+| Imagen | `mysql:8.4` |
 | Puerto | `3306` |
 | Root password | `root` |
 | Base de datos | `pruebas` |
 | Usuario | `rdev` |
 | Password | `rdev` |
-| Datos locales | `mysql_data/` |
+| Volumen | `mysql_data` |
+| Ruta interna | `/var/lib/mysql` |
 
-`mysql_data/` es un bind mount local. Docker puede crear la carpeta al levantar el servicio; si quieres crearla antes:
+Este ejemplo usa un volumen nombrado de Docker, no una carpeta local. Es lo recomendado para MySQL porque evita errores de permisos como:
+
+```text
+chown: changing ownership of '/var/lib/mysql/mysql.sock': Operation not permitted
+```
+
+Si antes usabas `./mysql_data:/var/lib/mysql` y el contenedor queda reiniciando, detente, baja el proyecto y recrealo con volumen nombrado:
 
 ```bash
-mkdir -p mysql_data
+docker compose down
+docker compose up -d
 ```
+
+La carpeta vieja `mysql_data/`, si existe, ya no se usa con esta configuracion.
 
 ## Conectarse
 
@@ -81,6 +91,5 @@ docker compose down
 Para borrar datos locales:
 
 ```bash
-docker compose down
-rm -rf mysql_data
+docker compose down -v
 ```

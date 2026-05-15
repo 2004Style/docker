@@ -1468,6 +1468,40 @@ docker compose down -v
 
 Ese comando elimina volumenes del proyecto. Para bases de datos, antes de usarlo haz backup.
 
+### MySQL reinicia con error `chown` o InnoDB
+
+Errores tipicos:
+
+```text
+chown: changing ownership of '/var/lib/mysql/mysql.sock': Operation not permitted
+InnoDB: The error means the system cannot find the path specified
+File ./ibdata1: 'open' returned OS error
+```
+
+Suele pasar cuando montas una carpeta local en `/var/lib/mysql`, por ejemplo `./mysql_data:/var/lib/mysql`, y el sistema de archivos del host no permite los permisos que MySQL necesita.
+
+Solucion recomendada para desarrollo:
+
+```yaml
+services:
+  mysql:
+    image: mysql:8.4
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
+```
+
+Luego recrea:
+
+```bash
+docker compose down
+docker compose up -d
+```
+
+Si tenias datos importantes en `./mysql_data`, haz backup antes de cambiar a volumen nombrado.
+
 ---
 
 ## 27. Glosario rapido
