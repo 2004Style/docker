@@ -13,7 +13,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-    restart: on-failure # reiniciar el contenedor si falla pero no cuando se detiene manualmente o se reinicia el servicio de docker
+    restart: unless-stopped # Reinicia siempre, excepto si tú lo detuviste manualmente.
 
 volumes:
   nats_data: # definir el volumen para los datos de NATS

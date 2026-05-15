@@ -1,0 +1,17 @@
+services:
+  mqtt:
+    image: eclipse-mosquitto:2 # broker MQTT Eclipse Mosquitto
+    container_name: mqtt-broker # nombre generico para reutilizar en varios proyectos
+    restart: unless-stopped # reinicia salvo que lo detengas manualmente
+    ports:
+      - "1883:1883" # puerto MQTT sin TLS
+    volumes:
+      - ./config/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro # configuracion del broker
+      - ./data:/mosquitto/data # persistencia del broker
+      - ./log:/mosquitto/log # logs del broker
+    healthcheck:
+      test: ["CMD-SHELL", "mosquitto_sub -h 127.0.0.1 -p 1883 -t '$$SYS/broker/uptime' -C 1 >/dev/null 2>&1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s

@@ -2,7 +2,7 @@ services:
   postgres:
     image: postgres:16.2-alpine # es la version ligera de Postgres
     container_name: postgres-server # nombre del contenedor
-    restart: on-failure # reiniciar el contenedor si falla pero no cuando se detiene manualmente o se reinicia el servicio de docker
+    restart: unless-stopped # Reinicia siempre, excepto si tú lo detuviste manualmente.
     environment: # variables de entorno para configurar Postgres
       POSTGRES_USER: rdev # usuario de la base de datos
       POSTGRES_PASSWORD: rdev # contraseña del usuario
