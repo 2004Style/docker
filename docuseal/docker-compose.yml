@@ -1,0 +1,35 @@
+services:
+  docuseal:
+    image: docuseal/docuseal:latest
+    container_name: docuseal-server
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://rdev:rdev@postgres:5432/docuseal
+      SECRET_KEY_BASE: ${SECRET_KEY_BASE:-cambiame_por_un_seguro_real}
+    volumes:
+      - docuseal_data:/data/docuseal
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: docuseal-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: rdev
+      POSTGRES_PASSWORD: rdev
+      POSTGRES_DB: docuseal
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U rdev -d docuseal"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  docuseal_data:
+  postgres_data:

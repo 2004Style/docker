@@ -5,8 +5,9 @@ services:
     restart: unless-stopped # Reinicia siempre, excepto si tú lo detuviste manualmente.
     ports:
       - "6379:6379" # mapear el puerto 6379 del contenedor al puerto 6379 del host
-    command: "redis-server --appendonly yes" # habilitar el modo de persistencia AOF
+    command: "redis-server /usr/local/etc/redis/redis.conf" # usar archivo de configuración
     volumes:
+      - ./redis.conf:/usr/local/etc/redis/redis.conf # montar configuración
       - redis_data:/data # volumen para persistir los datos de Redis
 volumes:
   redis_data: # definir el volumen para los datos de Redis
